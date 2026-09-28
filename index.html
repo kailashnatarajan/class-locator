@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>End City Room Locator</title>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:dark;--bg:#0a0612;--pn:#140d24;--ed:#33205c;--pu:#8a4fd6;--pl:#b784f5;--st:#e6e2a8;--ey:#5df2a1;--rd:#ff6b81;--tx:#ebe5fa;--mu:#9d92bd;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;background:radial-gradient(circle at 20% 10%,#1d1038 0,transparent 45%),radial-gradient(circle at 85% 80%,#261046 0,transparent 40%),#0a0612;color:var(--tx);font:22px/1.15 'VT323','Courier New',monospace}
+.w{max-width:1000px;margin:0 auto;padding:14px}
+h1,h2{font-family:'Press Start 2P',monospace;font-weight:400;margin:0}
+h1{font-size:clamp(14px,3.6vw,22px);color:var(--st);line-height:1.5}
+h2{font-size:12px;color:var(--pl);margin-bottom:12px}
+header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 0 16px}
+.logo{display:flex;gap:12px;align-items:center}
+.logo i{width:38px;height:38px;background:linear-gradient(#b784f5 0 35%,#6b35b5 35%);border:4px solid #3b1f6e;flex:none}
+small,.m{color:var(--mu)}
+.clk{font:12px 'Press Start 2P',monospace;color:var(--ey);text-align:right;line-height:1.7}
+.p{background:var(--pn);border:4px solid var(--ed);padding:14px;margin-bottom:16px;box-shadow:6px 6px 0 #05030a}
+.or{display:flex;gap:8px}
+input,select,button{font:inherit;color:var(--tx)}
+input[type=text],input[type=time],select{background:#0d0819;border:3px solid var(--ed);padding:6px 8px;min-width:0}
+#q{flex:1;font-size:22px}
+.b{background:var(--pu);border:3px solid #4c2a86;padding:6px 14px;cursor:pointer;box-shadow:0 4px 0 #3b1f6e}
+.b:active{transform:translateY(3px);box-shadow:none}
+.b:hover{background:var(--pl)}
+:focus-visible{outline:3px solid var(--ey);outline-offset:2px}
+#chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.chip{background:#231441;border:2px solid var(--ed);padding:0 8px;color:var(--st)}
+#res{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:8px;margin-top:10px}
+.r{background:#0d0819;border:3px solid var(--ey);padding:8px;text-align:left;cursor:pointer}
+.r b{color:var(--ey);font-weight:400}
+.ctl{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;margin-bottom:12px}
+.ctl label{display:flex;gap:6px;align-items:center;color:var(--mu)}
+#sum{margin-bottom:12px;color:var(--st)}
+.fl{display:flex;align-items:center;gap:12px;padding:14px 8px 10px;border-bottom:8px solid #4a3f6b;background:linear-gradient(#171029,#0f0a1c);margin-bottom:6px}
+.fl>b{font:10px 'Press Start 2P',monospace;color:var(--st);width:64px;flex:none;line-height:1.6;font-weight:400}
+.rm{display:flex;flex-wrap:wrap;gap:16px 14px}
+.sh{width:100px;background:none;border:0;padding:0;cursor:pointer;text-align:center;font-size:19px}
+.box{position:relative;height:56px;margin-top:16px;background:#7d43c7;border:4px solid #452681}
+.lid{position:absolute;left:-6px;right:-6px;top:-14px;height:30px;background:#a56cf0;border:4px solid #452681;font:9px/22px 'Press Start 2P',monospace;color:#1a0d33;transition:transform .25s}
+.free .lid{transform:translateY(-12px) rotate(-5deg);transform-origin:left top}
+.free .box::after{content:'';position:absolute;left:50%;top:16px;width:14px;height:14px;margin-left:-7px;background:var(--ey);box-shadow:0 0 14px 4px #5df2a199}
+.busy .box{filter:saturate(.35) brightness(.65)}
+.sh span{display:block;margin-top:5px;line-height:1}
+.free span{color:var(--ey)}.busy span{color:var(--rd)}
+.dim{opacity:.22}
+.sh.sel .box{outline:4px solid var(--st);outline-offset:4px}
+.star{color:var(--st)}
+.tl{display:grid;grid-template-columns:70px 130px 1fr;gap:8px;padding:5px 8px;border-left:6px solid var(--ey);background:#0d0819;margin-bottom:4px}
+.tl.busy{border-color:var(--rd)}.tl.now{outline:2px solid var(--st)}
+.tl.lunch{border-color:#4a3f6b;color:var(--mu)}
+footer{color:var(--mu);font-size:18px;padding:4px 2px 20px}
+@media(max-width:560px){.tl{grid-template-columns:1fr}.fl{flex-direction:column;align-items:flex-start}.or{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){.lid{transition:none}}
+</style></head><body><div class="w">
+<header><div class="logo"><i></i><div><h1>END CITY ROOM LOCATOR</h1><small>Find a quiet, empty room before a professor spawns.</small></div></div><div id="clk" class="clk"></div></header>
+
+<section class="p"><h2>Ender Oracle</h2>
+<div class="or"><input type="text" id="q" placeholder="I need an AC room on the ground floor for the next 2 hours" aria-label="Describe the room you need"><button class="b" id="go">Ask the Oracle</button></div>
+<div id="chips"></div><div id="res"></div></section>
+
+<section class="p"><h2>The Floor Grid</h2>
+<div class="ctl">
+<select id="d" aria-label="Day"></select><input type="time" id="t" aria-label="Time">
+<button class="b" id="live">Live now</button><button class="b" id="pearl">Throw ender pearl</button>
+<select id="fl" aria-label="Floor"><option value="0">All floors</option><option value="1">Ground (1xx)</option><option value="2">Floor 2</option><option value="3">Floor 3</option><option value="4">Floor 4</option><option value="5">Floor 5</option><option value="6">Floor 6</option></select>
+<select id="ty" aria-label="Type"><option value="">Rooms + labs</option><option value="class">Classrooms</option><option value="lab">Labs</option></select>
+<label><input type="checkbox" id="ac">AC only</label>
+<select id="md" aria-label="Minimum free time"><option value="0">Any free time</option><option value="30">Free 30m+</option><option value="60">Free 1h+</option><option value="120">Free 2h+</option><option value="180">Free 3h+</option></select>
+</div>
+<div id="sum"></div><div id="tower"></div></section>
+
+<section class="p" id="det"></section>
+<footer>Built from 9 section timetables (2026-27 odd sem) that list rooms. The I-year sheets are 2024-25 and name no rooms, so they are left out. Room floor = first digit of the number. AC flags are placeholders: edit AC in the code.</footer>
+</div>
+<script>
+const $=i=>document.getElementById(i);
+const DAYS=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+const P=[[540,590],[590,640],[650,700],[700,750],[750,800],[800,850],[850,900],[910,960],[960,1010]];
+const X={2:{G:'Universal Human Values',H:'Verbal Reasoning',I:'Social Engineering'},3:{G:'Analytical Thinking',H:'Indian Art Form',I:'Community Connect'},4:{}};
+const AC=new Set(['211','416','518','519','602','625']),LAB=new Set(['107','108','309']);
+// token: letter = slot in home room, "." = none, "rooms:label" = explicit room(s), P = project
+const SEC=[
+{n:'II BME',h:'602',y:2,s:'Transforms & BVP|Biomedical Signals|Electric & Electronic Circuits|Digital Logic (Medical)|Medical Physics|Professional Ethics',d:['E C I I . 107,309:Lab 107,309:Lab . .','C E B A . 106:H 106:H . .','B D A . . 106:H 602:G . .','A E B D . . . 107,309:Lab 107,309:Lab','F A C D . . . 602:G 602:G']},
+{n:'II ECE-DS A',h:'416',y:2,s:'Transforms & BVP|Solid State Devices|Computer Organization|Digital Logic Design|EM Theory|Professional Ethics',d:['E A I I . 602:G 602:G 309,107:Lab 309,107:Lab','C A E D . 602:G . 106:H 106:H','A B C D . . 106:H . .','B C A F . 309,107:Lab 309,107:Lab . .','D B E C . . . . .']},
+{n:'II ECE-DS B',h:'411',y:2,s:'Transforms & BVP|Solid State Devices|Computer Organization|Digital Logic Design|EM Theory|Professional Ethics',d:['. . 309,107:Lab 309,107:Lab . D B C I','309,107:Lab 309,107:Lab . . . C D E A','401:G . . . . I E A D','401:G 401:G 106:H 106:H . A C B E','106:H . . . . F A B C']},
+{n:'III BME',h:'211',y:3,s:'Probability & Stats|Microcontrollers in Medicine|Biomedical Signal Processing|Biometrics|Modern Wireless Comm|Medical Imaging',d:['625:G 625:G 107:Lab 107:Lab . E B F H','108:Lab 108:Lab 625:G . . C D A B','. . . . . C A F D','. . . 108:I . A C E B','108:I . . . . F A D E']},
+{n:'III ECE-A',h:'518',y:3,s:'Discrete Maths|Microprocessor & MCU|VLSI Design|System & Network on Chip|Machine Learning|Community Connect',d:['E B B A . 625:G 625:G . .','H D B P . . 625:G . .','C A D F . . . 108,309:Lab 108,309:Lab','A E C F . . . . .','D A E C . 108,309:Lab 108,309:Lab . .']},
+{n:'III ECE-B',h:'518',y:3,s:'Discrete Maths|Microprocessor & MCU|VLSI Design|System & Network on Chip|Machine Learning|Community Connect',d:['108,309:Lab 108,309:Lab . . . E B A D','625:G 625:G . . . F B D C','625:G . . . . P B A H','108,309:Lab 108,309:Lab . . . A C E F','. . . . . C A E D']},
+{n:'III ECE-DS',h:'519',y:3,s:'Discrete Maths|Microprocessor & MCU|VLSI Design|Machine Learning|Database Design|Community Connect',d:['E B C A . . . . .','C B D F . 108,107:Lab 108,107:Lab . .','H B A C . . . 625:G 625:G','A D E F . . . . .','D A E P . 625:G . 108,107:Lab 108,107:Lab']},
+{n:'IV ECE-A',h:'225',y:4,s:'Behavioural Psychology|Wireless & Antenna|Network Security|Semiconductor Memory|Scripting for EDA|Machine Learning',d:['C . A D . . . . .','C D B F . . . . .','B 108:Lab E F . . . . .','F A E B . . . . .','C A D E . . . . .']},
+{n:'IV ECE-B',h:'227',y:4,s:'Behavioural Psychology|Wireless & Antenna|Network Security|Semiconductor Memory|Scripting for EDA|Machine Learning',d:['C A E F . . . . .','C E F B . . . . .','C D A B . . . . .','D B 108:Lab A . . . . .','E D F . . . . . .']}];
+const occ={},mk=r=>occ[r]??=Array.from({length:5},()=>Array(9).fill(null));
+SEC.forEach(S=>{mk(S.h);const sub=S.s.split('|');S.d.forEach((row,di)=>row.split(' ').forEach((t,p)=>{if(t==='.')return;let rooms=[S.h],l=t;if(t.includes(':')){const a=t.split(':');rooms=a[0].split(',');l=a[1]}
+const c=/^[A-I]$/.test(l)?(l<'G'?sub[l.charCodeAt(0)-65]:X[S.y][l]):l==='P'?'Project work':'Lab session';rooms.forEach(r=>mk(r)[di][p]={n:S.n,c})}))});
+const ROOMS=Object.keys(occ).sort();
+const fm=t=>{const h=t/60|0,m=t%60;return(h%12||12)+':'+String(m).padStart(2,'0')+(h<12?'am':'pm')};
+const du=m=>m>=60?(m/60|0)+'h'+(m%60?(m%60)+'m':''):m+'m';
+const S={d:0,t:0,live:1,fl:0,ty:'',ac:0,md:0,sel:null};
+function nowSt(){const n=new Date();S.d=(n.getDay()+6)%7;S.t=n.getHours()*60+n.getMinutes()}
+function state(r,d,t){if(d>4)return{f:1,u:1010};const row=occ[r][d];
+for(let p=0;p<9;p++)if(row[p]&&P[p][0]<=t&&t<P[p][1]){let u=P[p][1];for(let q=p+1;q<9&&row[q];q++)u=P[q][1];return{f:0,u,c:row[p]}}
+let u=1010;for(let p=0;p<9;p++)if(row[p]&&P[p][0]>t){u=P[p][0];break}return{f:1,u:Math.max(u,t)}}
+const ok=(r,o=S)=>(!o.fl||+r[0]===o.fl)&&(!o.ty||(o.ty==='lab')===LAB.has(r))&&(!o.ac||AC.has(r));
+const nm=r=>(LAB.has(r)?'Lab ':r==='106'?'TB-':'Room ')+r;
+function render(){
+$('d').value=S.d;$('t').value=String(S.t/60|0).padStart(2,'0')+':'+String(S.t%60).padStart(2,'0');
+$('fl').value=S.fl;$('ty').value=S.ty;$('ac').checked=!!S.ac;$('md').value=S.md;
+$('clk').innerHTML=DAYS[S.d]+'<br>'+fm(S.t)+(S.live?' LIVE':'');
+const inf=ROOMS.map(r=>({r,...state(r,S.d,S.t)}));
+const good=x=>x.f&&ok(x.r)&&x.u-S.t>=S.md;
+const best=inf.filter(good).sort((a,b)=>b.u-a.u)[0];
+const nf=inf.filter(x=>x.f).length;
+$('sum').textContent=S.d>4?'Weekend: the whole End City is empty.':(S.t<540||S.t>=1010?'Outside class hours (9:00am-4:50pm): every room is free. ':'')+nf+' of '+ROOMS.length+' rooms open right now'+(best?'. Longest window: '+nm(best.r)+' for '+du(best.u-S.t)+'.':'.');
+let h='';for(let f=6;f>=1;f--){h+='<div class="fl"><b>'+(f==1?'GROUND':'FLOOR '+f)+'</b><div class="rm">';
+inf.filter(x=>+x.r[0]===f).forEach(x=>{const dm=(ok(x.r)&&(!S.md||!x.f||x.u-S.t>=S.md)&&(!S.md||x.f))?'':' dim';
+h+='<button class="sh '+(x.f?'free':'busy')+dm+(S.sel===x.r?' sel':'')+'" data-r="'+x.r+'" aria-label="'+nm(x.r)+(x.f?' free':' in class')+'"><div class="box"><div class="lid">'+x.r+'</div></div><span>'+(x.f?'free to '+fm(x.u):'class to '+fm(x.u))+'</span><small>'+(LAB.has(x.r)?'lab ':'')+(AC.has(x.r)?'AC ':'')+(best&&best.r===x.r?'<b class="star">* longest</b>':'')+'</small></button>'});
+h+='</div></div>'}
+$('tower').innerHTML=h;detail()}
+function detail(){const r=S.sel,e=$('det');if(!r){e.innerHTML='<h2>Room Log</h2><p class="m">Tap a shulker box to see its whole day.</p>';return}
+let h='<h2>'+nm(r)+' · '+DAYS[S.d]+'</h2>';
+P.forEach((p,i)=>{const c=S.d>4?null:occ[r][S.d][i],now=p[0]<=S.t&&S.t<p[1];
+h+='<div class="tl '+(c?'busy':i==4?'lunch':'')+(now?' now':'')+'"><span>P'+(i+1)+'</span><span>'+fm(p[0])+'-'+fm(p[1])+'</span><span>'+(c?c.c+' · '+c.n:i==4?'Lunch break':'Free')+'</span></div>'});
+e.innerHTML=h}
+function parse(q){q=q.toLowerCase();const o={d:S.d,t:S.t,dur:60,fl:0,ty:'',ac:0,live:1,c:[]};let m;
+const dn=DAYS.findIndex(n=>q.includes(n.toLowerCase()));
+if(q.includes('tomorrow')){o.d=(((new Date(Date.now()+864e5)).getDay()+6)%7);o.t=540;o.live=0;o.c.push('Tomorrow')}
+else if(dn>=0){o.d=dn;o.t=540;o.live=0;o.c.push(DAYS[dn])}
+if(/after lunch/.test(q)){o.t=800;o.live=0}
+else if(m=q.match(/(?:at|from|after|by|around)\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/)){let h=+m[1];const ap=m[3];if(ap==='pm'&&h<12)h+=12;if(ap==='am'&&h===12)h=0;if(!ap&&h<8)h+=12;o.t=h*60+(+m[2]||0);o.live=0}
+if(/half an? hour/.test(q))o.dur=30;
+else if(m=q.match(/(\d+(?:\.\d+)?|an?)\s*(hours?|hrs?|hr|h|minutes?|mins?)\b/)){const n=/^an?$/.test(m[1])?1:+m[1];o.dur=/^h/.test(m[2])?Math.round(n*60):Math.round(n)}
+if(/ground/.test(q))o.fl=1;else if(/top floor/.test(q))o.fl=6;else if(m=q.match(/floor\s*(\d)|(\d)(?:st|nd|rd|th)?\s*floor/))o.fl=+(m[1]||m[2]);
+if(/\bac\b|a\.c\.|air.?condition/.test(q))o.ac=1;
+if(/\blabs?\b/.test(q))o.ty='lab';else if(/classroom|lecture/.test(q))o.ty='class';
+return o}
+function ask(){const o=parse($('q').value);if(!$('q').value.trim())return;
+Object.assign(S,{d:o.d,t:o.t,live:o.live,fl:o.fl,ty:o.ty,ac:o.ac,md:o.dur>=180?180:o.dur>=120?120:o.dur>=60?60:30});
+const ch=[DAYS[o.d]+' '+fm(o.t),du(o.dur)];if(o.fl)ch.push(o.fl==1?'Ground floor':'Floor '+o.fl);if(o.ac)ch.push('AC');if(o.ty)ch.push(o.ty==='lab'?'Labs':'Classrooms');
+$('chips').innerHTML=ch.map(c=>'<span class="chip">'+c+'</span>').join('');
+const all=ROOMS.map(r=>({r,...state(r,o.d,o.t)})).filter(x=>x.f&&x.u-o.t>=o.dur);
+let hit=all.filter(x=>ok(x.r,o)).sort((a,b)=>b.u-a.u),note='';
+if(!hit.length){hit=all.sort((a,b)=>b.u-a.u).slice(0,4);note='<p class="m">No exact match. Closest rooms that are free for that long (filters relaxed):</p>'}
+$('res').innerHTML=note+(hit.length?hit.slice(0,8).map(x=>'<button class="r" data-r="'+x.r+'"><b>'+nm(x.r)+'</b> · '+(x.r[0]==1?'Ground':'Floor '+x.r[0])+(AC.has(x.r)?' · AC':'')+'<br>free until '+fm(x.u)+' ('+du(x.u-o.t)+')</button>').join(''):'<p class="m">Nothing is free for that long then. Try a shorter time or another day.</p>');
+render()}
+$('go').onclick=ask;$('q').onkeydown=e=>{if(e.key==='Enter')ask()};
+document.addEventListener('click',e=>{const b=e.target.closest('[data-r]');if(b){S.sel=b.dataset.r;render();$('det').scrollIntoView({behavior:'smooth',block:'nearest'})}});
+$('d').innerHTML=DAYS.map((n,i)=>'<option value="'+i+'">'+n+'</option>').join('');
+$('d').onchange=e=>{S.d=+e.target.value;S.live=0;render()};
+$('t').onchange=e=>{const v=e.target.value.split(':');if(v.length==2){S.t=+v[0]*60+ +v[1];S.live=0;render()}};
+$('live').onclick=()=>{S.live=1;nowSt();render()};
+$('fl').onchange=e=>{S.fl=+e.target.value;render()};$('ty').onchange=e=>{S.ty=e.target.value;render()};
+$('ac').onchange=e=>{S.ac=e.target.checked?1:0;render()};$('md').onchange=e=>{S.md=+e.target.value;render()};
+$('pearl').onclick=()=>{const c=ROOMS.map(r=>({r,...state(r,S.d,S.t)})).filter(x=>x.f&&x.u-S.t>=60&&ok(x.r));if(!c.length){$('sum').textContent='The pearl fizzled: no room is free for an hour with these filters.';return}S.sel=c[Math.random()*c.length|0].r;render()};
+nowSt();render();setInterval(()=>{if(S.live){nowSt();render()}},30000);
+</script></body></html>
