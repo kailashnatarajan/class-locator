@@ -11,6 +11,9 @@ Rooms are shulker boxes stacked as End City floors: **open and glowing = free**,
 - **Room Log** - click a room to see its full day, period by period, with the class and section in each slot.
 - **Filters** - day, time, floor, room type, AC only, minimum free time.
 - **Live mode** - follows the real clock and refreshes every 30 seconds.
+- **3D Building Map (Phase 2)** - a rotatable CSS-3D tower. Each room block is green (free), amber (free under 30 min) or red (in class), and updates with the time and day.
+- **Live countdown (Phase 2)** - click a room to see a ticking timer to the next class start (or to when the current class ends), plus what class comes next.
+- **Call the Squad (Phase 2)** - claim a free room, then open a pre-filled WhatsApp message such as *"📍 Heading to IST 602 (Floor 6). It's free until 2:10 PM. Come fast!"*.
 - **Ender Pearl** - teleports you to a random room that is free for at least an hour.
 
 ## Run locally
